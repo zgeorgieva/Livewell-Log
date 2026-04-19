@@ -6,7 +6,764 @@
 <title>Livewell Community Garden</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livewell Community Garden</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
+  --bg: #f9f9f7; --surface: #ffffff; --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.15); --text: #1a1a1a; --muted: #6b6b6b; --hint: #999;
+  --radius: 10px; --radius-lg: 14px;
+  --green: #6DBF8A; --green-bg: #EDF7F2; --green-dk: #0D3D1F;
+  --teal: #3DBDAA;  --teal-bg: #E8FAF6;  --teal-dk: #0A3D3A;
+  --sky: #7EC8E3;   --sky-bg: #E8F4FD;   --sky-dk: #0A3D52;
+  --lilac: #B09FD8; --lilac-bg: #F0EEFF; --lilac-dk: #2A1A5C;
+  --purple: #534AB7;
+  --coral: #E8705A; --coral-bg: #FEF0ED; --coral-dk: #5A1A0E;
+  --gold: #F0B429;  --gold-bg: #FEF9EC;  --gold-dk: #4A3000;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#18181b; --surface:#27272a; --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14); --text:#f4f4f5; --muted:#a1a1aa; --hint:#71717a; }
+}
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); font-size:15px; min-height:100vh; }
+.app { max-width:680px; margin:0 auto; padding-bottom:3rem; }
+
+.hero { background:linear-gradient(135deg,#7EC8E3 0%,#B09FD8 25%,#E87FAB 45%,#F0B429 65%,#6DBF8A 85%,#3DBDAA 100%); padding:2rem 1.5rem 1.5rem; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:repeating-conic-gradient(from 0deg at 30% 50%,rgba(255,255,255,0.06) 0deg 30deg,transparent 30deg 60deg),repeating-conic-gradient(from 15deg at 70% 30%,rgba(255,255,255,0.05) 0deg 45deg,transparent 45deg 90deg); }
+.hero-inner { position:relative; z-index:1; }
+.hero-title { font-size:22px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.25); }
+.hero-sub { font-size:13px; color:rgba(255,255,255,0.88); margin-top:3px; }
+.hero-badge { display:inline-block; font-size:12px; padding:3px 12px; border-radius:20px; font-weight:600; margin-top:10px; }
+.hero-badge.ok     { background:rgba(109,191,138,0.35); color:#fff; border:1px solid rgba(109,191,138,0.6); }
+.hero-badge.warn   { background:rgba(240,180,41,0.35);  color:#fff; border:1px solid rgba(240,180,41,0.6); }
+.hero-badge.danger { background:rgba(232,112,90,0.35);  color:#fff; border:1px solid rgba(232,112,90,0.6); }
+
+.status-bar { font-size:12px; padding:7px 1.25rem; display:flex; align-items:center; gap:7px; border-bottom:1px solid var(--border); }
+.status-bar.connecting { background:var(--gold-bg);  color:var(--gold-dk); }
+.status-bar.ok         { background:var(--green-bg); color:var(--green-dk); }
+.status-bar.error      { background:var(--coral-bg); color:var(--coral-dk); }
+.status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.status-dot.connecting { background:var(--gold); }
+.status-dot.ok  { background:var(--green); }
+.status-dot.error { background:var(--coral); }
+
+.tabs { display:flex; background:var(--surface); border-bottom:2px solid var(--border); padding:0 1.25rem; position:sticky; top:0; z-index:5; }
+.tab { font-size:13px; padding:11px 14px; border:none; cursor:pointer; background:transparent; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; }
+.tab.active { color:var(--purple); border-bottom-color:var(--purple); font-weight:600; }
+.section { padding:1rem 1.25rem; }
+
+.weather-strip { display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; margin-bottom:1rem; scrollbar-width:none; }
+.weather-strip::-webkit-scrollbar { display:none; }
+.wday { flex-shrink:0; text-align:center; padding:8px 10px; border-radius:10px; min-width:66px; font-size:13px; border:1.5px solid transparent; }
+.wday-clear { background:var(--gold-bg); border-color:var(--gold); color:var(--gold-dk); }
+.wday-rain  { background:var(--sky-bg);  border-color:var(--sky);  color:var(--sky-dk); }
+.wday-hot   { background:var(--coral-bg);border-color:var(--coral);color:var(--coral-dk); }
+.wday-name { font-size:11px; opacity:.7; margin-bottom:3px; }
+.wday-temp { font-size:15px; font-weight:600; }
+.wday-pct  { font-size:11px; opacity:.7; margin-top:1px; }
+
+.alert { display:flex; gap:10px; align-items:flex-start; padding:10px 14px; border-radius:10px; margin-bottom:1rem; font-size:13px; border:1.5px solid transparent; line-height:1.5; }
+.alert.daily    { background:var(--coral-bg); border-color:var(--coral); color:var(--coral-dk); }
+.alert.needed   { background:var(--gold-bg);  border-color:var(--gold);  color:var(--gold-dk); }
+.alert.ok       { background:var(--green-bg); border-color:var(--green); color:var(--green-dk); }
+.alert.offseason{ background:var(--lilac-bg); border-color:var(--lilac); color:var(--lilac-dk); }
+.alert-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+.alert strong { font-weight:700; display:block; margin-bottom:2px; }
+
+.task-card { border-radius:var(--radius-lg); border:1.5px solid var(--border2); margin-bottom:10px; overflow:hidden; background:var(--surface); }
+.task-card.weed-card  { border-color:var(--green); }
+.task-card.trash-card { border-color:var(--lilac); }
+.task-card.mow-card   { border-color:var(--teal); }
+.task-card.water-card { border-color:var(--sky); }
+.task-card.overdue    { border-color:var(--coral); }
+.task-card.soon       { border-color:var(--gold); }
+.task-card.done-today { border-color:var(--green); }
+.task-header { display:grid; grid-template-columns:32px 1fr auto; gap:10px; align-items:center; padding:12px 14px; }
+.task-icon { font-size:20px; text-align:center; }
+.task-name { font-weight:600; font-size:14px; }
+.task-name.struck { text-decoration:line-through; color:var(--muted); }
+.task-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+.chip { font-size:11px; padding:3px 9px; border-radius:20px; white-space:nowrap; font-weight:600; }
+.chip-overdue { background:var(--coral-bg); color:#993C1D; border:1px solid var(--coral); }
+.chip-soon    { background:var(--gold-bg);  color:#854F0B; border:1px solid var(--gold); }
+.chip-ok      { background:var(--green-bg); color:var(--green-dk); border:1px solid var(--green); }
+.chip-done    { background:var(--green-bg); color:var(--green-dk); border:1px solid var(--green); }
+.chip-off     { background:var(--lilac-bg); color:var(--purple); border:1px solid var(--lilac); }
+
+.done-banner { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--green-dk); padding:7px 14px; background:var(--green-bg); border-bottom:1px solid rgba(109,191,138,0.3); }
+
+.signup-section { padding:10px 14px; }
+.signup-row-label { font-size:12px; color:var(--muted); font-weight:600; margin-bottom:8px; }
+
+/* Signup rows — card-like with done state */
+.signup-row { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; border:1px solid var(--border2); margin-bottom:6px; background:var(--bg); font-size:13px; }
+.signup-row.completed { border-color:var(--green); background:var(--green-bg); opacity:.75; }
+.signup-row.pending   { border-color:var(--lilac); }
+.signup-row.overdue-signup { border-color:var(--coral); background:var(--coral-bg); }
+.signup-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+.avatar-pending   { background:var(--lilac-bg); color:var(--purple); }
+.avatar-completed { background:var(--green-bg); color:var(--green-dk); }
+.avatar-overdue   { background:var(--coral-bg); color:var(--coral-dk); }
+.signup-row-info { flex:1; min-width:0; }
+.signup-row-name { font-weight:600; font-size:13px; }
+.signup-row-date { font-size:11px; color:var(--muted); margin-top:1px; }
+.signup-row-status { font-size:11px; font-weight:600; white-space:nowrap; }
+.status-done    { color:var(--green-dk); }
+.status-pending { color:var(--purple); }
+.status-overdue { color:var(--coral-dk); }
+.btn-mark-this { font-size:11px; padding:3px 10px; border-radius:20px; border:1.5px solid var(--green); background:transparent; cursor:pointer; color:var(--green-dk); font-weight:600; white-space:nowrap; }
+.btn-mark-this:hover { background:var(--green-bg); }
+.btn-remove-signup { font-size:15px; color:var(--muted); background:none; border:none; cursor:pointer; line-height:1; padding:2px 4px; }
+.btn-remove-signup:hover { color:var(--coral); }
+
+.no-signups { font-size:12px; color:var(--hint); margin-bottom:9px; font-style:italic; }
+.task-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.btn-signup { font-size:12px; padding:5px 13px; border-radius:8px; border:1.5px solid var(--lilac); background:transparent; cursor:pointer; color:var(--purple); font-weight:600; }
+.btn-signup:hover { background:var(--lilac-bg); }
+.btn-done-solo { font-size:12px; padding:5px 13px; border-radius:8px; border:1.5px solid var(--green); background:transparent; cursor:pointer; color:var(--green-dk); font-weight:600; }
+.btn-done-solo:hover { background:var(--green-bg); }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(44,58,107,0.45); align-items:center; justify-content:center; z-index:100; padding:1rem; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border-radius:var(--radius-lg); border:1.5px solid var(--lilac); padding:1.5rem; width:100%; max-width:380px; max-height:90vh; overflow-y:auto; }
+.modal h3 { font-size:16px; font-weight:700; margin-bottom:4px; color:var(--purple); }
+.modal-hint { font-size:12px; color:var(--lilac-dk); margin-bottom:1rem; padding:7px 10px; background:var(--lilac-bg); border-radius:8px; border:1px solid rgba(176,159,216,0.4); line-height:1.5; }
+.modal label { font-size:13px; color:var(--muted); display:block; margin-bottom:4px; }
+.modal input[type=text] { width:100%; margin-bottom:12px; padding:8px 10px; border:1px solid var(--border2); border-radius:8px; background:var(--bg); color:var(--text); font-size:14px; }
+.modal input[type=text]:focus { outline:none; border-color:var(--lilac); }
+
+/* Quick-pick signup buttons in complete modal */
+.quick-pick-label { font-size:12px; color:var(--muted); margin-bottom:6px; display:block; }
+.quick-pick-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.quick-pick-btn { font-size:12px; padding:4px 12px; border-radius:20px; border:1px solid var(--lilac); background:transparent; cursor:pointer; color:var(--purple); }
+.quick-pick-btn:hover, .quick-pick-btn.selected { background:var(--purple); color:#fff; border-color:var(--purple); }
+
+.date-picker-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.date-btn { font-size:12px; padding:5px 11px; border-radius:20px; border:1px solid var(--border2); background:var(--bg); cursor:pointer; color:var(--text); }
+.date-btn:hover { border-color:var(--lilac); color:var(--purple); }
+.date-btn.ideal { border-color:var(--purple); color:var(--purple); font-weight:700; }
+.date-btn.selected { background:var(--purple); color:#fff; border-color:var(--purple); }
+.water-date-note { font-size:12px; padding:7px 10px; background:var(--sky-bg); border:1px solid var(--sky); border-radius:8px; color:var(--sky-dk); margin-bottom:10px; line-height:1.5; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
+.btn-primary { background:var(--purple); color:#fff; border:none; padding:8px 20px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:700; }
+.btn-primary:hover { background:#3C3489; }
+.btn-cancel { background:transparent; border:1px solid var(--border2); padding:8px 14px; border-radius:8px; font-size:13px; cursor:pointer; color:var(--muted); }
+.btn-danger { background:var(--coral); color:#fff; border:none; padding:8px 20px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:700; }
+.btn-danger:hover { background:#c45a45; }
+.modal.danger-modal { border-color:var(--coral); }
+.modal.danger-modal h3 { color:var(--coral-dk); }
+.modal.danger-modal .modal-hint { background:var(--coral-bg); border-color:rgba(232,112,90,0.3); color:var(--coral-dk); }
+
+/* History */
+.hist-section-label { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:1rem 0 6px; }
+.hist-entry { display:flex; gap:10px; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border2); margin-bottom:6px; font-size:13px; align-items:flex-start; background:var(--surface); }
+.hist-entry.hist-done    { border-color:var(--green); background:var(--green-bg); }
+.hist-entry.hist-pending { border-color:var(--lilac); background:var(--lilac-bg); }
+.hist-entry.hist-missed  { border-color:var(--coral); background:var(--coral-bg); }
+.hist-icon { font-size:16px; width:24px; text-align:center; flex-shrink:0; margin-top:2px; }
+.hist-body { flex:1; min-width:0; }
+.hist-who  { font-weight:700; }
+.hist-who.done-who    { color:var(--green-dk); }
+.hist-who.pending-who { color:var(--purple); }
+.hist-who.missed-who  { color:var(--coral-dk); }
+.hist-detail { color:var(--muted); font-size:12px; margin-top:2px; }
+.hist-note   { font-style:italic; font-size:12px; margin-top:2px; }
+.hist-note.done-note    { color:var(--green-dk); }
+.hist-note.pending-note { color:var(--lilac-dk); }
+.hist-note.missed-note  { color:var(--coral-dk); }
+.hist-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; margin-left:6px; vertical-align:middle; }
+.badge-done    { background:var(--green-bg); color:var(--green-dk); border:1px solid var(--green); }
+.badge-pending { background:var(--lilac-bg); color:var(--purple); border:1px solid var(--lilac); }
+.badge-missed  { background:var(--coral-bg); color:var(--coral-dk); border:1px solid var(--coral); }
+.btn-delete { flex-shrink:0; font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid var(--border2); background:transparent; cursor:pointer; color:var(--muted); }
+.btn-delete:hover { border-color:var(--coral); color:var(--coral-dk); background:var(--coral-bg); }
+.empty { color:var(--muted); font-size:14px; text-align:center; padding:2.5rem 0; }
+
+/* Schedule */
+.sched-section { margin-bottom:1.5rem; }
+.sched-title { font-size:13px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.freq-pill { font-size:12px; padding:3px 10px; border-radius:20px; display:inline-block; margin:3px 4px 3px 0; border:1px solid; }
+.fp-weed  { background:var(--green-bg); border-color:var(--green); color:var(--green-dk); }
+.fp-trash { background:var(--lilac-bg); border-color:var(--lilac); color:var(--lilac-dk); }
+.fp-mow   { background:var(--teal-bg);  border-color:var(--teal);  color:var(--teal-dk); }
+.fp-water { background:var(--sky-bg);   border-color:var(--sky);   color:var(--sky-dk); }
+.tag-flex   { font-size:11px; background:var(--lilac-bg); color:var(--purple); border:1px solid rgba(176,159,216,0.4); padding:2px 8px; border-radius:20px; }
+.tag-locked { font-size:11px; background:var(--sky-bg); color:var(--sky-dk); border:1px solid var(--sky); padding:2px 8px; border-radius:20px; }
+.info-box { font-size:12px; margin-top:8px; padding:8px 10px; background:var(--sky-bg); border-radius:8px; border:1px solid var(--sky); color:var(--sky-dk); line-height:1.5; }
+.footer-note { font-size:12px; color:var(--hint); padding:1rem 0 0; border-top:1px solid var(--border); margin-top:1rem; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-title">Livewell Community Garden</div>
+    <div class="hero-sub">Philadelphia, PA — 2026 Season</div>
+    <div class="hero-badge ok" id="badge-text">Loading…</div>
+  </div>
+</div>
+
+<div class="status-bar connecting" id="status-bar">
+  <div class="status-dot connecting" id="status-dot"></div>
+  <span id="status-text">Connecting to shared database…</span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('upcoming')">Upcoming &amp; due</button>
+  <button class="tab" onclick="showTab('history')">History</button>
+  <button class="tab" onclick="showTab('schedule')">2026 schedule</button>
+</div>
+
+<div id="tab-upcoming" class="section"><p style="color:var(--muted);font-size:13px;padding:1rem 0">Connecting…</p></div>
+<div id="tab-history"  class="section" style="display:none"></div>
+<div id="tab-schedule" class="section" style="display:none"></div>
+
+<!-- Sign up modal -->
+<div class="modal-overlay" id="signup-overlay">
+  <div class="modal">
+    <h3 id="su-title">Sign up</h3>
+    <div class="modal-hint" id="su-hint"></div>
+    <label>Your name or nickname</label>
+    <input type="text" id="su-name" placeholder="e.g. Rosa, Neighbor #4…">
+    <label id="su-date-label">Pick a date</label>
+    <div id="su-date-area"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSignupModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitSignup()">Sign up</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mark done modal -->
+<div class="modal-overlay" id="done-overlay">
+  <div class="modal">
+    <h3 id="done-title">Mark as done</h3>
+    <div class="modal-hint" id="done-hint"></div>
+    <div id="done-quickpick-wrap" style="display:none">
+      <span class="quick-pick-label">Who did it? (tap to select)</span>
+      <div class="quick-pick-row" id="done-quickpick"></div>
+    </div>
+    <label>Or enter a name</label>
+    <input type="text" id="done-name" placeholder="e.g. Rosa, Neighbor #4…">
+    <label>Notes (optional)</label>
+    <input type="text" id="done-note" placeholder="e.g. used the big watering can">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeDoneModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitDone()">Mark as done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal-overlay" id="delete-overlay">
+  <div class="modal danger-modal">
+    <h3>Delete this record?</h3>
+    <div class="modal-hint" id="delete-hint"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyC93GIDekuvZR86WGKPCQE9pzAyW2qkhf4",
+  authDomain:        "livewell-log.firebaseapp.com",
+  projectId:         "livewell-log",
+  storageBucket:     "livewell-log.firebasestorage.app",
+  messagingSenderId: "136884101480",
+  appId:             "1:136884101480:web:dffd65e0740eaa6dde36dd"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+const REF   = doc(db, "garden", "sharedLog");
+window._save = async (data) => { await setDoc(REF, data); };
+onSnapshot(REF, (snap) => {
+  const data = snap.exists() ? snap.data() : { signups:[], completions:[] };
+  window._signups     = Array.isArray(data.signups)     ? data.signups     : [];
+  window._completions = Array.isArray(data.completions) ? data.completions : [];
+  setStatus('ok','✓ Live — changes sync instantly to all neighbors');
+  window.dispatchEvent(new CustomEvent('data-update'));
+}, (err) => { setStatus('error','⚠ Database error: ' + err.message); });
+</script>
+
+<script>
+/*
+  DATA MODEL (new, flat arrays — easier to query and link):
+  signups[]     = { id, taskId, name, date, completionId? }
+  completions[] = { id, taskId, who, note, date, signupId? }
+
+  A signup is "fulfilled" when it has a completionId.
+  A completion is "linked" when it has a signupId.
+*/
+let signups = [], completions = [];
+let pendingTaskId = null, pendingSignupId = null, deleteRecordId = null, deleteRecordType = null;
+let selectedDate = null, quickPickName = null;
+
+const TASKS = [
+  { id:'weed',  name:'Weeding & trimming', icon:'🌿', cardClass:'weed-card',  fpClass:'fp-weed'  },
+  { id:'trash', name:'Trash cleanup',      icon:'🗑️', cardClass:'trash-card', fpClass:'fp-trash' },
+  { id:'mow',   name:'Grass mowing',       icon:'✂️', cardClass:'mow-card',   fpClass:'fp-mow'   },
+  { id:'water', name:'Watering',           icon:'💧', cardClass:'water-card', fpClass:'fp-water' },
+];
+const FREQ_TABLE = {
+  weed:  [{months:[1,2,12],label:'Every 6 weeks',days:42},{months:[3,4,10,11],label:'Every 2 weeks',days:14},{months:[5,6,7,8,9],label:'Weekly',days:7}],
+  trash: [{months:[11,12,1,2,3],label:'Monthly',days:30},{months:[4,5,6,7,8,9,10],label:'Every 2 weeks',days:14}],
+  mow:   [{months:[1,2,12],label:'Not needed',days:null},{months:[3,11],label:'Monthly',days:30},{months:[4,5,6,7,8,9,10],label:'Every 2 weeks',days:14}],
+  water: [{months:[12,1,2],label:'Not needed',days:null},{months:[3,11],label:'Monthly check',days:30},{months:[4,10],label:'Weekly if dry',days:7},{months:[5,6,9],label:'2–3x weekly',days:3},{months:[7,8],label:'Daily',days:1}],
+};
+const FLEXIBLE_TASKS = ['weed','trash','mow'];
+const WINDOW_DAYS = 3;
+const WEATHER = {
+  wateringLevel:'monitor',
+  reason:'Mid-April in Philadelphia — cool with some rain expected. Soil moisture looks fine.',
+  days:[
+    {dow:'Sun',high:54,precip_pct:65,dateStr:'2026-04-19'},{dow:'Mon',high:49,precip_pct:25,dateStr:'2026-04-20'},
+    {dow:'Tue',high:53,precip_pct:10,dateStr:'2026-04-21'},{dow:'Wed',high:66,precip_pct:35,dateStr:'2026-04-22'},
+    {dow:'Thu',high:73,precip_pct:10,dateStr:'2026-04-23'},
+  ]
+};
+
+const today = new Date(); today.setHours(0,0,0,0);
+const todayMonth = today.getMonth()+1;
+const todayStr   = isoDate(today);
+
+/* ── helpers ── */
+function setStatus(t,m){ document.getElementById('status-bar').className='status-bar '+t; document.getElementById('status-dot').className='status-dot '+t; document.getElementById('status-text').textContent=m; }
+function isoDate(d){ return d.toISOString().split('T')[0]; }
+function addDays(s,n){ const d=new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return isoDate(d); }
+function daysBetween(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
+function fmtShort(s){ return new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtDow(s)  { return new Date(s+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}); }
+function fmtFull(s) { return new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function fmtDT(s)   { return new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function initials(n){ return n.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?'; }
+
+/* ── frequency ── */
+function getFreqEntry(id,month){
+  if(id==='water'){ const lv=WEATHER.wateringLevel; if(lv==='daily'||lv==='needed')return{label:'Daily (weather alert)',days:1}; if(lv==='offseason')return{label:'Off-season',days:null}; return FREQ_TABLE.water.find(r=>r.months.includes(month))||{label:'Off-season',days:null}; }
+  return FREQ_TABLE[id].find(r=>r.months.includes(month))||{label:'Off-season',days:null};
+}
+
+/* ── queries ── */
+function getLastCompletion(taskId){
+  const cs=completions.filter(c=>c.taskId===taskId); if(!cs.length)return null;
+  return cs.sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+}
+function isDoneToday(taskId){ return completions.some(c=>c.taskId===taskId&&c.date.startsWith(todayStr)); }
+function getTodayCompletion(taskId){ return completions.filter(c=>c.taskId===taskId&&c.date.startsWith(todayStr)).sort((a,b)=>new Date(b.date)-new Date(a.date))[0]||null; }
+
+/* Active signups = not yet fulfilled, date is today or future */
+function getActiveSignups(taskId){ return signups.filter(s=>s.taskId===taskId&&!s.completionId&&daysBetween(todayStr,s.date)>=0).sort((a,b)=>new Date(a.date)-new Date(b.date)); }
+
+/* Overdue signups = not fulfilled, date already passed */
+function getOverdueSignups(taskId){ return signups.filter(s=>s.taskId===taskId&&!s.completionId&&daysBetween(todayStr,s.date)<0); }
+
+/* ── status ── */
+function getStatus(id){
+  if(isDoneToday(id)) return{label:'Done today',chip:'chip-done',extra:''};
+  const entry=getFreqEntry(id,todayMonth);
+  if(!entry.days) return{label:'Off-season',chip:'chip-off',extra:''};
+  const last=getLastCompletion(id);
+  if(!last) return{label:'Never logged',chip:'chip-soon',extra:'soon'};
+  const elapsed=Math.floor((today-new Date(last.date))/86400000);
+  if(elapsed>=entry.days) return{label:`${elapsed}d — due!`,chip:'chip-overdue',extra:'overdue'};
+  const rem=entry.days-elapsed;
+  if(rem<=2) return{label:`Due in ${rem}d`,chip:'chip-soon',extra:'soon'};
+  return{label:`Next in ~${rem}d`,chip:'chip-ok',extra:''};
+}
+function isActionable(id){ return getStatus(id).chip!=='chip-off'; }
+
+/* ── next due date ── */
+function nextDueStr(id){
+  const entry=getFreqEntry(id,todayMonth); if(!entry.days)return todayStr;
+  const last=getLastCompletion(id); if(!last)return todayStr;
+  return isoDate(new Date(Math.max(new Date(last.date).getTime()+entry.days*86400000,today.getTime())));
+}
+
+/* ── date windows ── */
+function getFlexibleDates(id){ const center=nextDueStr(id),dates=[]; for(let i=-WINDOW_DAYS;i<=WINDOW_DAYS;i++){ const d=addDays(center,i); if(daysBetween(todayStr,d)>=0)dates.push(d); } return{dates:[...new Set(dates)].sort(),center}; }
+function getWaterDates(){
+  const lv=WEATHER.wateringLevel,month=todayMonth;
+  if(lv==='daily'||lv==='needed')return{dates:WEATHER.days.map(d=>d.dateStr).filter(d=>daysBetween(todayStr,d)>=0),note:'Daily watering required — pick any forecast day.'};
+  if(month<=2||month>=12)return{dates:[],note:'Off-season — no watering needed.'};
+  const entry=getFreqEntry('water',month); if(!entry.days)return{dates:[],note:'No watering needed right now.'};
+  const center=nextDueStr('water'),fc=WEATHER.days.map(d=>d.dateStr),cands=[];
+  for(let i=0;i<=entry.days;i++){const d=addDays(center,i);if(daysBetween(todayStr,d)>=0)cands.push(d);}
+  const inf=cands.filter(d=>fc.includes(d));
+  return{dates:[...new Set(inf.length?inf:cands.slice(0,entry.days))].sort(),note:`Based on forecast & seasonal schedule (${entry.label}). Only valid dates shown.`};
+}
+
+/* ── weather ── */
+function wIcon(d){if(d.precip_pct>=50)return'🌧️';if(d.precip_pct>=25)return'🌦️';if(d.high>=90)return'🔥';if(d.high>=75)return'☀️';return'⛅';}
+function wClass(d){if(d.high>=90)return'wday-hot';if(d.precip_pct>=50)return'wday-rain';return'wday-clear';}
+function renderWeather(){ return '<div class="weather-strip">'+WEATHER.days.map(d=>`<div class="wday ${wClass(d)}"><div class="wday-name">${d.dow}</div><div style="font-size:16px;margin:2px 0">${wIcon(d)}</div><div class="wday-temp">${Math.round(d.high)}°</div><div class="wday-pct">${d.precip_pct}% rain</div></div>`).join('')+'</div>'; }
+function renderAlert(){
+  const{wateringLevel:lv,reason}=WEATHER;
+  const map={daily:['daily','🔥','Water every day this week'],needed:['needed','⚠️','Watering needed now'],monitor:['ok','💧','Watering looks fine this week'],offseason:['offseason','💤','Off-season — no watering needed']};
+  const[cls,icon,title]=map[lv]||map.monitor;
+  return`<div class="alert ${cls}"><div class="alert-icon">${icon}</div><div><strong>${title}</strong>${reason}</div></div>`;
+}
+
+/* ══════════════════════════════════════════
+   RENDER UPCOMING
+══════════════════════════════════════════ */
+function renderUpcoming(){
+  let due=0,html=renderWeather()+renderAlert();
+  TASKS.forEach(t=>{
+    const s=getStatus(t.id),entry=getFreqEntry(t.id,todayMonth);
+    const doneToday=isDoneToday(t.id),completion=getTodayCompletion(t.id),actionable=isActionable(t.id);
+    const lastC=getLastCompletion(t.id);
+    if(s.chip==='chip-overdue'||s.label==='Never logged') due++;
+
+    html+=`<div class="task-card ${doneToday?'done-today':s.extra||t.cardClass}">
+      <div class="task-header">
+        <div class="task-icon">${t.icon}</div>
+        <div>
+          <div class="task-name${doneToday?' struck':''}">${t.name}</div>
+          <div class="task-meta">${lastC?`Last done: ${fmtDT(lastC.date)}`:'Never logged'} · ${entry.label}</div>
+        </div>
+        <span class="chip ${s.chip}">${s.label}</span>
+      </div>`;
+
+    if(doneToday&&completion){
+      html+=`<div class="done-banner">✓ Done today by <strong style="margin:0 3px">${esc(completion.who)}</strong>${completion.note?`— <em>${esc(completion.note)}</em>`:''}</div>`;
+    }
+
+    if(actionable){
+      const active=getActiveSignups(t.id);
+      const overdue=getOverdueSignups(t.id);
+      const allSups=[...overdue,...active];
+
+      html+=`<div class="signup-section">`;
+
+      if(allSups.length){
+        html+=`<div class="signup-row-label">${doneToday?'Upcoming signups:':'Who\'s signed up:'}</div>`;
+        allSups.forEach(su=>{
+          const isPast=daysBetween(todayStr,su.date)<0;
+          const rowCls=isPast?'overdue-signup':'pending';
+          const avCls=isPast?'avatar-overdue':'avatar-pending';
+          const stCls=isPast?'status-overdue':'status-pending';
+          const stTxt=isPast?`Overdue — was ${fmtShort(su.date)}`:`Signed up for ${fmtShort(su.date)}`;
+          html+=`<div class="signup-row ${rowCls}">
+            <div class="signup-avatar ${avCls}">${initials(su.name)}</div>
+            <div class="signup-row-info">
+              <div class="signup-row-name">${esc(su.name)}</div>
+              <div class="signup-row-date">${stTxt}</div>
+            </div>
+            ${!doneToday?`<button class="btn-mark-this" onclick="openDoneForSignup('${t.id}','${su.id}','${su.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">✓ Mark done</button>`:''}
+            <button class="btn-remove-signup" onclick="deleteSignup('${su.id}')" title="Remove signup">×</button>
+          </div>`;
+        });
+      } else {
+        html+=`<div class="no-signups">No upcoming signups yet.</div>`;
+      }
+
+      html+=`<div class="task-actions">
+        <button class="btn-signup" onclick="openSignupModal('${t.id}')">+ Sign up</button>
+        ${!doneToday?`<button class="btn-done-solo" onclick="openDoneSolo('${t.id}')">✓ Mark as done</button>`:''}
+      </div></div>`;
+    }
+    html+='</div>';
+  });
+
+  document.getElementById('tab-upcoming').innerHTML=html;
+  const b=document.getElementById('badge-text');
+  b.textContent=due?`${due} task${due>1?'s':''} due`:'All up to date';
+  b.className='hero-badge '+(due>=2?'danger':due===1?'warn':'ok');
+}
+
+/* ══════════════════════════════════════════
+   SIGN UP MODAL
+══════════════════════════════════════════ */
+function openSignupModal(taskId){
+  pendingTaskId=taskId; selectedDate=null;
+  const t=TASKS.find(x=>x.id===taskId),entry=getFreqEntry(taskId,todayMonth);
+  document.getElementById('su-title').textContent=`Sign up — ${t.name}`;
+  document.getElementById('su-hint').textContent=taskId==='water'
+    ?`Dates are set by the forecast & seasonal schedule (${entry.label}).`
+    :`Recommended: ${entry.label}. Pick ±${WINDOW_DAYS} days around the ideal date (★).`;
+  document.getElementById('su-name').value='';
+  buildSuDatePicker(taskId);
+  document.getElementById('signup-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('su-name').focus(),50);
+}
+function closeSignupModal(){ document.getElementById('signup-overlay').classList.remove('open'); pendingTaskId=null; selectedDate=null; }
+document.getElementById('signup-overlay').addEventListener('click',function(e){if(e.target===this)closeSignupModal();});
+
+function buildSuDatePicker(taskId){
+  const area=document.getElementById('su-date-area'),lbl=document.getElementById('su-date-label');
+  if(taskId==='water'){
+    const{dates,note}=getWaterDates(); lbl.textContent='Available watering dates'; selectedDate=dates[0]||null;
+    area.innerHTML=`<div class="water-date-note">${note}</div>`+renderDateBtns(dates,dates[0],true,'su');
+  } else {
+    const{dates,center}=getFlexibleDates(taskId); lbl.textContent=`Pick a date (±${WINDOW_DAYS} days · ★ = ideal)`;
+    selectedDate=dates.includes(center)?center:(dates[0]||null);
+    area.innerHTML=renderDateBtns(dates,center,false,'su');
+  }
+  refreshDateBtns('su');
+}
+
+async function submitSignup(){
+  if(!window._save)return;
+  const name=document.getElementById('su-name').value.trim()||'Anonymous neighbor';
+  const date=selectedDate||todayStr;
+  if(pendingTaskId==='water'&&!selectedDate){closeSignupModal();return;}
+  signups.push({id:uid(),taskId:pendingTaskId,name,date,completionId:null});
+  await window._save({signups,completions});
+  closeSignupModal();
+}
+
+/* ══════════════════════════════════════════
+   MARK DONE MODAL — linked to a signup
+══════════════════════════════════════════ */
+function openDoneForSignup(taskId, signupId, signupName){
+  pendingTaskId=taskId; pendingSignupId=signupId; quickPickName=signupName;
+  const t=TASKS.find(x=>x.id===taskId);
+  document.getElementById('done-title').textContent=`Mark done — ${t.name}`;
+  document.getElementById('done-hint').textContent=`Marking ${signupName}'s signup as completed. Confirm or change who did it below.`;
+  document.getElementById('done-name').value=signupName;
+  document.getElementById('done-note').value='';
+  document.getElementById('done-quickpick-wrap').style.display='none';
+  document.getElementById('done-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('done-note').focus(),50);
+}
+
+/* MARK DONE MODAL — no signup, show existing signups as quick picks */
+function openDoneSolo(taskId){
+  pendingTaskId=taskId; pendingSignupId=null; quickPickName=null;
+  const t=TASKS.find(x=>x.id===taskId);
+  const active=getActiveSignups(taskId);
+  document.getElementById('done-title').textContent=`Mark done — ${t.name}`;
+  document.getElementById('done-hint').textContent=active.length
+    ?'Select who did it from the signups below, or type a name.'
+    :'No one signed up for this. Enter who did it.';
+  document.getElementById('done-name').value='';
+  document.getElementById('done-note').value='';
+
+  const wrap=document.getElementById('done-quickpick-wrap');
+  const row=document.getElementById('done-quickpick');
+  if(active.length){
+    wrap.style.display='block';
+    row.innerHTML=active.map(su=>`<button class="quick-pick-btn" data-name="${esc(su.name)}" data-supid="${su.id}" onclick="selectQuickPick(this,'${su.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}','${su.id}')">${esc(su.name)}</button>`).join('');
+  } else {
+    wrap.style.display='none';
+  }
+  document.getElementById('done-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('done-name').focus(),50);
+}
+
+function selectQuickPick(btn, name, supId){
+  quickPickName=name; pendingSignupId=supId;
+  document.getElementById('done-name').value=name;
+  document.getElementById('done-quickpick').querySelectorAll('.quick-pick-btn').forEach(b=>b.classList.toggle('selected',b===btn));
+}
+
+function closeDoneModal(){ document.getElementById('done-overlay').classList.remove('open'); pendingTaskId=null; pendingSignupId=null; quickPickName=null; }
+document.getElementById('done-overlay').addEventListener('click',function(e){if(e.target===this)closeDoneModal();});
+
+async function submitDone(){
+  if(!window._save)return;
+  const who=document.getElementById('done-name').value.trim()||quickPickName||'Anonymous neighbor';
+  const note=document.getElementById('done-note').value.trim();
+  const cId=uid();
+  completions.push({id:cId,taskId:pendingTaskId,who,note,date:new Date().toISOString(),signupId:pendingSignupId||null});
+  /* link the signup if one was selected */
+  if(pendingSignupId){
+    const su=signups.find(s=>s.id===pendingSignupId);
+    if(su) su.completionId=cId;
+  }
+  await window._save({signups,completions});
+  closeDoneModal();
+}
+
+/* ── remove a signup ── */
+async function deleteSignup(signupId){
+  signups=signups.filter(s=>s.id!==signupId);
+  await window._save({signups,completions});
+}
+
+/* ══════════════════════════════════════════
+   DATE PICKER SHARED
+══════════════════════════════════════════ */
+function renderDateBtns(dates,center,isWater,pfx){
+  if(!dates.length)return'<p style="font-size:12px;color:var(--muted);margin-bottom:10px">No available dates.</p>';
+  return'<div class="date-picker-row">'+dates.map(d=>{
+    const ideal=!isWater&&d===center;
+    return`<button class="date-btn${ideal?' ideal':''}" data-date="${d}" data-pfx="${pfx}" onclick="selectDate('${d}','${pfx}')">${fmtDow(d)} ${fmtShort(d)}${ideal?' ★':''}</button>`;
+  }).join('')+'</div>';
+}
+function selectDate(d,pfx){ selectedDate=d; refreshDateBtns(pfx); }
+function refreshDateBtns(pfx){
+  const areaId=pfx==='su'?'su-date-area':'done-date-area';
+  const area=document.getElementById(areaId); if(!area)return;
+  area.querySelectorAll('.date-btn').forEach(b=>b.classList.toggle('selected',b.dataset.date===selectedDate));
+}
+
+/* ══════════════════════════════════════════
+   DELETE MODAL (completions only)
+══════════════════════════════════════════ */
+function openDeleteModal(id,type){
+  deleteRecordId=id; deleteRecordType=type;
+  let hint='';
+  if(type==='completion'){
+    const c=completions.find(x=>x.id===id);
+    if(c){ const t=TASKS.find(x=>x.id===c.taskId); hint=`Remove "${t.name}" completion by "${c.who}" logged on ${fmtDT(c.date)}.`; }
+  }
+  document.getElementById('delete-hint').textContent=hint||'This record will be permanently removed.';
+  document.getElementById('delete-overlay').classList.add('open');
+}
+function closeDeleteModal(){ document.getElementById('delete-overlay').classList.remove('open'); deleteRecordId=null; deleteRecordType=null; }
+document.getElementById('delete-overlay').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
+async function confirmDelete(){
+  if(!window._save)return;
+  if(deleteRecordType==='completion'){
+    const c=completions.find(x=>x.id===deleteRecordId);
+    /* unlink the signup if it was linked */
+    if(c&&c.signupId){ const su=signups.find(s=>s.id===c.signupId); if(su)su.completionId=null; }
+    completions=completions.filter(x=>x.id!==deleteRecordId);
+  }
+  await window._save({signups,completions});
+  closeDeleteModal();
+}
+
+/* ══════════════════════════════════════════
+   HISTORY TAB
+══════════════════════════════════════════ */
+function renderHistory(){
+  const el=document.getElementById('tab-history');
+
+  /* build unified timeline entries */
+  const entries=[];
+
+  completions.forEach(c=>{
+    const su=c.signupId?signups.find(s=>s.id===c.signupId):null;
+    entries.push({type:'completion',date:new Date(c.date),c,su});
+  });
+
+  /* signups with no completion and date has passed = missed */
+  signups.filter(s=>!s.completionId&&daysBetween(todayStr,s.date)<0).forEach(s=>{
+    entries.push({type:'missed',date:new Date(s.date+'T23:59:00'),s});
+  });
+
+  /* future/today signups (pending) */
+  signups.filter(s=>!s.completionId&&daysBetween(todayStr,s.date)>=0).forEach(s=>{
+    entries.push({type:'pending',date:new Date(s.date+'T00:00:00'),s});
+  });
+
+  if(!entries.length){el.innerHTML='<p class="empty">Nothing logged yet — signups and completions will appear here.</p>';return;}
+
+  entries.sort((a,b)=>b.date-a.date);
+
+  let html='<p style="font-size:12px;color:var(--hint);margin-bottom:12px">Completions can be deleted using the × button. Signups are managed from the Upcoming tab.</p>';
+  let lastLabel='';
+
+  entries.forEach(e=>{
+    const t=TASKS.find(x=>x.id===(e.c?.taskId||e.s?.taskId));
+    const dateLabel=e.date.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    if(dateLabel!==lastLabel){ html+=`<div class="hist-section-label">${dateLabel}</div>`; lastLabel=dateLabel; }
+
+    if(e.type==='completion'){
+      const c=e.c, linked=e.su;
+      html+=`<div class="hist-entry hist-done">
+        <div class="hist-icon">${t.icon}</div>
+        <div class="hist-body">
+          <div>
+            <span class="hist-who done-who">${esc(c.who)}</span>
+            <span class="hist-badge badge-done">✓ Done</span>
+            completed <strong>${t.name}</strong>
+            ${linked?`<span style="font-size:12px;color:var(--green-dk)"> · fulfilled signup for ${fmtShort(linked.date)}</span>`:''}
+          </div>
+          <div class="hist-detail">${fmtDT(c.date)}</div>
+          ${c.note?`<div class="hist-note done-note">"${esc(c.note)}"</div>`:''}
+        </div>
+        <button class="btn-delete" onclick="openDeleteModal('${c.id}','completion')">×</button>
+      </div>`;
+    } else if(e.type==='missed'){
+      const s=e.s;
+      html+=`<div class="hist-entry hist-missed">
+        <div class="hist-icon">${t.icon}</div>
+        <div class="hist-body">
+          <div>
+            <span class="hist-who missed-who">${esc(s.name)}</span>
+            <span class="hist-badge badge-missed">Missed</span>
+            signed up for <strong>${t.name}</strong>
+          </div>
+          <div class="hist-detail">Was scheduled ${fmtFull(s.date)} — not completed</div>
+        </div>
+      </div>`;
+    } else {
+      const s=e.s;
+      html+=`<div class="hist-entry hist-pending">
+        <div class="hist-icon">${t.icon}</div>
+        <div class="hist-body">
+          <div>
+            <span class="hist-who pending-who">${esc(s.name)}</span>
+            <span class="hist-badge badge-pending">Upcoming</span>
+            signed up for <strong>${t.name}</strong>
+          </div>
+          <div class="hist-detail">Scheduled for ${fmtFull(s.date)}</div>
+        </div>
+      </div>`;
+    }
+  });
+
+  el.innerHTML=html;
+}
+
+/* ══════════════════════════════════════════
+   SCHEDULE TAB
+══════════════════════════════════════════ */
+function renderSchedule(){
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let html=`<p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Philadelphia 2026 base schedule. Watering dates are locked to the forecast &amp; season. Other tasks allow a ±${WINDOW_DAYS}-day flexibility window.</p>`;
+  TASKS.forEach(t=>{
+    const flex=FLEXIBLE_TASKS.includes(t.id);
+    html+=`<div class="sched-section"><div class="sched-title"><span style="font-size:16px">${t.icon}</span>${t.name}<span class="${flex?'tag-flex':'tag-locked'}">${flex?`±${WINDOW_DAYS} day window`:'forecast-locked'}</span></div><div>`;
+    FREQ_TABLE[t.id].forEach(r=>{html+=`<span class="freq-pill ${t.fpClass}"><strong>${r.label}</strong> — ${r.months.map(m=>MN[m-1]).join(', ')}</span>`;});
+    if(t.id==='water')html+=`<div class="info-box">⚡ Live override: daily if any forecast day ≥ 90°F; immediate if 4+ dry days (&lt;30% rain, &lt;80°F) in May–Oct.</div>`;
+    html+=`</div></div>`;
+  });
+  html+=`<div class="footer-note">Frost-free season approx. mid-April through mid-October in Philadelphia.</div>`;
+  document.getElementById('tab-schedule').innerHTML=html;
+}
+
+/* ── tabs ── */
+function showTab(name){
+  ['upcoming','history','schedule'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'block':'none';});
+  document.querySelectorAll('.tab').forEach((b,i)=>{b.classList.toggle('active',['upcoming','history','schedule'][i]===name);});
+  if(name==='history')renderHistory();
+  if(name==='schedule')renderSchedule();
+}
+
+/* ── firebase sync ── */
+window.addEventListener('data-update',()=>{
+  signups=window._signups||[];
+  completions=window._completions||[];
+  const active=document.querySelector('.tab.active')?.textContent?.trim();
+  if(!active||active.includes('Upcoming'))renderUpcoming();
+  else if(active==='History')renderHistory();
+});
+
+setTimeout(()=>{if(!window._save)setStatus('error','⚠ Could not reach Firebase. Check your internet and refresh.');},9000);
+</script>
+</body>
+</html>
+
   --bg: #f9f9f7; --surface: #ffffff; --border: rgba(0,0,0,0.09);
   --border2: rgba(0,0,0,0.15); --text: #1a1a1a; --muted: #6b6b6b; --hint: #999;
   --radius: 10px; --radius-lg: 14px;
