@@ -23,6 +23,8 @@
 }
 body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); font-size:15px; min-height:100vh; }
 .app { max-width:680px; margin:0 auto; padding-bottom:3rem; }
+
+/* Hero */
 .hero { background:linear-gradient(135deg,#7EC8E3 0%,#B09FD8 25%,#E87FAB 45%,#F0B429 65%,#6DBF8A 85%,#3DBDAA 100%); padding:2rem 1.5rem 1.5rem; position:relative; overflow:hidden; }
 .hero::before { content:''; position:absolute; inset:0; background:repeating-conic-gradient(from 0deg at 30% 50%,rgba(255,255,255,0.06) 0deg 30deg,transparent 30deg 60deg),repeating-conic-gradient(from 15deg at 70% 30%,rgba(255,255,255,0.05) 0deg 45deg,transparent 45deg 90deg); }
 .hero-inner { position:relative; z-index:1; }
@@ -32,6 +34,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .hero-badge.ok     { background:rgba(109,191,138,0.35); color:#fff; border:1px solid rgba(109,191,138,0.6); }
 .hero-badge.warn   { background:rgba(240,180,41,0.35);  color:#fff; border:1px solid rgba(240,180,41,0.6); }
 .hero-badge.danger { background:rgba(232,112,90,0.35);  color:#fff; border:1px solid rgba(232,112,90,0.6); }
+
+/* Status */
 .status-bar { font-size:12px; padding:7px 1.25rem; display:flex; align-items:center; gap:7px; border-bottom:1px solid var(--border); line-height:1.5; }
 .status-bar.connecting { background:var(--gold-bg);  color:var(--gold-dk); }
 .status-bar.ok         { background:var(--green-bg); color:var(--green-dk); }
@@ -40,10 +44,14 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .status-dot.connecting { background:var(--gold); }
 .status-dot.ok         { background:var(--green); }
 .status-dot.error      { background:var(--coral); }
+
+/* Tabs */
 .tabs { display:flex; background:var(--surface); border-bottom:2px solid var(--border); padding:0 1.25rem; position:sticky; top:0; z-index:5; }
 .tab { font-size:13px; padding:11px 14px; border:none; cursor:pointer; background:transparent; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; font-weight:400; }
 .tab.active { color:var(--purple); border-bottom-color:var(--purple); font-weight:600; }
 .section { padding:1rem 1.25rem; }
+
+/* Weather */
 .weather-strip { display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; margin-bottom:1rem; scrollbar-width:none; }
 .weather-strip::-webkit-scrollbar { display:none; }
 .wday { flex-shrink:0; text-align:center; padding:8px 10px; border-radius:10px; min-width:66px; font-size:13px; border:1.5px solid transparent; }
@@ -53,6 +61,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .wday-name { font-size:11px; opacity:.7; margin-bottom:3px; }
 .wday-temp { font-size:15px; font-weight:600; }
 .wday-pct  { font-size:11px; opacity:.7; margin-top:1px; }
+
+/* Alert */
 .alert { display:flex; gap:10px; align-items:flex-start; padding:10px 14px; border-radius:10px; margin-bottom:1rem; font-size:13px; border:1.5px solid transparent; line-height:1.5; }
 .alert.daily    { background:var(--coral-bg); border-color:var(--coral); color:var(--coral-dk); }
 .alert.needed   { background:var(--gold-bg);  border-color:var(--gold);  color:var(--gold-dk); }
@@ -60,6 +70,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .alert.offseason{ background:var(--lilac-bg); border-color:var(--lilac); color:var(--lilac-dk); }
 .alert-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
 .alert strong { font-weight:700; display:block; margin-bottom:2px; }
+
+/* Task cards */
 .task-card { border-radius:var(--radius-lg); border:1.5px solid var(--border2); margin-bottom:10px; overflow:hidden; background:var(--surface); }
 .task-card.weed-card  { border-color:var(--green); }
 .task-card.trash-card { border-color:var(--lilac); }
@@ -67,10 +79,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .task-card.water-card { border-color:var(--sky); }
 .task-card.overdue    { border-color:var(--coral); }
 .task-card.soon       { border-color:var(--gold); }
-.task-card.done-today { border-color:var(--green); opacity:.82; }
+.task-card.done-today { border-color:var(--green); }
 .task-header { display:grid; grid-template-columns:32px 1fr auto; gap:10px; align-items:center; padding:12px 14px; }
 .task-icon { font-size:20px; text-align:center; }
 .task-name { font-weight:600; font-size:14px; }
+.task-name.struck { text-decoration:line-through; color:var(--muted); }
 .task-meta { font-size:12px; color:var(--muted); margin-top:2px; }
 .chip { font-size:11px; padding:3px 9px; border-radius:20px; white-space:nowrap; font-weight:600; }
 .chip-overdue { background:var(--coral-bg); color:#993C1D; border:1px solid var(--coral); }
@@ -78,8 +91,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .chip-ok      { background:var(--green-bg); color:var(--green-dk); border:1px solid var(--green); }
 .chip-done    { background:var(--green-bg); color:var(--green-dk); border:1px solid var(--green); }
 .chip-off     { background:var(--lilac-bg); color:var(--purple); border:1px solid var(--lilac); }
+
+/* Task body */
 .task-body { border-top:1px solid var(--border); padding:10px 14px; background:rgba(0,0,0,0.018); }
 @media (prefers-color-scheme:dark) { .task-body { background:rgba(255,255,255,0.03); } }
+
+/* Done banner */
+.done-banner { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color:var(--green-dk); padding:7px 12px 7px 14px; background:var(--green-bg); border-bottom:1px solid rgba(109,191,138,0.3); flex-wrap:wrap; }
+.done-banner-left { display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+.btn-undo { font-size:11px; padding:3px 10px; border-radius:20px; border:1px solid rgba(232,112,90,0.4); background:transparent; cursor:pointer; color:var(--coral-dk); white-space:nowrap; flex-shrink:0; }
+.btn-undo:hover { background:var(--coral-bg); }
+
+/* Signup section */
+.signup-section { padding:10px 14px; }
 .signup-row-label { font-size:12px; color:var(--muted); font-weight:600; margin-bottom:6px; }
 .signup-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; min-height:22px; }
 .signup-pill { font-size:12px; padding:3px 10px; border-radius:20px; background:var(--surface); border:1px solid rgba(176,159,216,0.5); color:var(--lilac-dk); display:flex; align-items:center; gap:4px; }
@@ -92,7 +116,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .btn-signup:hover { background:var(--lilac-bg); }
 .btn-done { font-size:12px; padding:5px 13px; border-radius:8px; border:1.5px solid var(--green); background:transparent; cursor:pointer; color:var(--green-dk); font-weight:600; }
 .btn-done:hover { background:var(--green-bg); }
-.done-banner { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--green-dk); padding:7px 14px; background:var(--green-bg); border-top:1px solid var(--green); }
+
+/* Modal */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(44,58,107,0.45); align-items:center; justify-content:center; z-index:100; padding:1rem; }
 .modal-overlay.open { display:flex; }
 .modal { background:var(--surface); border-radius:var(--radius-lg); border:1.5px solid var(--lilac); padding:1.5rem; width:100%; max-width:360px; max-height:90vh; overflow-y:auto; }
@@ -111,12 +136,23 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .btn-primary { background:var(--purple); color:#fff; border:none; padding:8px 20px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:700; }
 .btn-primary:hover { background:#3C3489; }
 .btn-cancel { background:transparent; border:1px solid var(--border2); padding:8px 14px; border-radius:8px; font-size:13px; cursor:pointer; color:var(--muted); }
+
+/* Confirm modal (for undo) */
+.confirm-modal { border-color:var(--coral); }
+.confirm-modal h3 { color:var(--coral-dk); }
+.confirm-modal .modal-hint { background:var(--coral-bg); border-color:rgba(232,112,90,0.4); color:var(--coral-dk); }
+.btn-danger { background:var(--coral); color:#fff; border:none; padding:8px 20px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:700; }
+.btn-danger:hover { background:#c45a45; }
+
+/* History */
 .hist-entry { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
 .hist-icon { font-size:16px; width:24px; text-align:center; flex-shrink:0; margin-top:1px; }
 .hist-who { font-weight:700; color:var(--purple); }
 .hist-when { color:var(--muted); font-size:12px; }
 .hist-note { color:var(--muted); font-size:12px; margin-top:2px; font-style:italic; }
 .empty { color:var(--muted); font-size:14px; text-align:center; padding:2.5rem 0; }
+
+/* Schedule */
 .sched-section { margin-bottom:1.5rem; }
 .sched-title { font-size:13px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .freq-pill { font-size:12px; padding:3px 10px; border-radius:20px; display:inline-block; margin:3px 4px 3px 0; border:1px solid; }
@@ -156,6 +192,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 <div id="tab-history"  class="section" style="display:none"></div>
 <div id="tab-schedule" class="section" style="display:none"></div>
 
+<!-- Sign up / Mark done modal -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <h3 id="modal-title">Sign up</h3>
@@ -175,12 +212,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
   </div>
 </div>
 
-</div><!-- /.app -->
+<!-- Undo / confirm modal -->
+<div class="modal-overlay" id="confirm-overlay">
+  <div class="modal confirm-modal">
+    <h3>Undo completion?</h3>
+    <div class="modal-hint" id="confirm-hint"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Keep it</button>
+      <button class="btn-danger" onclick="confirmUndo()">Yes, undo</button>
+    </div>
+  </div>
+</div>
 
-<!-- Firebase SDK (ESM via CDN) -->
+</div>
+
+<!-- Firebase -->
 <script type="module">
-import { initializeApp }                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot }            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp }                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyC93GIDekuvZR86WGKPCQE9pzAyW2qkhf4",
@@ -195,10 +244,8 @@ const fbApp = initializeApp(firebaseConfig);
 const db    = getFirestore(fbApp);
 const REF   = doc(db, "garden", "sharedLog");
 
-/* Save helper */
 window._save = async (data) => { await setDoc(REF, data); };
 
-/* Live listener — fires immediately with current data, then on every change */
 onSnapshot(REF, (snap) => {
   const data = snap.exists() ? snap.data() : { history: [], signups: {} };
   window._history = Array.isArray(data.history) ? data.history : [];
@@ -211,8 +258,10 @@ onSnapshot(REF, (snap) => {
 </script>
 
 <script>
-/* ── shared state (written by Firebase module via window._history / window._signups) ── */
+/* ── state ── */
 let history = [], signups = {};
+let pendingTaskId = null, modalMode = 'signup', selectedDate = null;
+let undoTaskId = null, undoEntryId = null;
 
 const TASKS = [
   { id:'weed',  name:'Weeding & trimming', icon:'🌿', cardClass:'weed-card',  fpClass:'fp-weed'  },
@@ -244,7 +293,7 @@ const FREQ_TABLE = {
   ],
 };
 const FLEXIBLE_TASKS = ['weed','trash','mow'];
-const WINDOW_DAYS    = 3;
+const WINDOW_DAYS = 3;
 const WEATHER = {
   wateringLevel: 'monitor',
   reason: 'Mid-April in Philadelphia — cool with some rain expected. Soil moisture looks fine.',
@@ -257,19 +306,18 @@ const WEATHER = {
   ]
 };
 
-let pendingTaskId = null, modalMode = 'signup', selectedDate = null;
 const today = new Date(); today.setHours(0,0,0,0);
 const todayMonth = today.getMonth() + 1;
 const todayStr   = isoDate(today);
 
-/* ── Status bar ── */
+/* ── status bar ── */
 function setStatus(type, msg) {
-  document.getElementById('status-bar').className  = 'status-bar ' + type;
-  document.getElementById('status-dot').className  = 'status-dot ' + type;
+  document.getElementById('status-bar').className   = 'status-bar ' + type;
+  document.getElementById('status-dot').className   = 'status-dot ' + type;
   document.getElementById('status-text').textContent = msg;
 }
 
-/* ── Date helpers ── */
+/* ── date helpers ── */
 function isoDate(d) { return d.toISOString().split('T')[0]; }
 function addDays(str, n) { const d = new Date(str+'T00:00:00'); d.setDate(d.getDate()+n); return isoDate(d); }
 function daysBetween(a,b) { return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
@@ -278,8 +326,9 @@ function fmtDow(s)      { return new Date(s+'T12:00:00').toLocaleDateString('en-
 function fmtFull(s)     { return new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
 function fmtDateTime(s) { return new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function uid()  { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
-/* ── Frequency / status ── */
+/* ── frequency / status ── */
 function getFreqEntry(id, month) {
   if (id === 'water') {
     const lv = WEATHER.wateringLevel;
@@ -294,7 +343,11 @@ function getLastDone(id) {
   if (!es.length) return null;
   return new Date(es.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].date);
 }
-function isDoneToday(id) { return history.some(e=>e.taskId===id && e.date.startsWith(todayStr)); }
+function getTodayCompletion(id) {
+  return history.filter(e=>e.taskId===id && e.date.startsWith(todayStr))
+                .sort((a,b)=>new Date(b.date)-new Date(a.date))[0] || null;
+}
+function isDoneToday(id) { return !!getTodayCompletion(id); }
 function nextDueStr(id) {
   const entry = getFreqEntry(id, todayMonth);
   if (!entry.days) return todayStr;
@@ -316,7 +369,7 @@ function getStatus(id) {
 }
 function isActionable(id) { return getStatus(id).chip !== 'chip-off'; }
 
-/* ── Signups ── */
+/* ── signups ── */
 function getSignups(id) { return signups[id] || []; }
 function addSignup(id, name, date) {
   if (!signups[id]) signups[id] = [];
@@ -326,7 +379,7 @@ function addSignup(id, name, date) {
 }
 function removeSignup(id, name) { if (signups[id]) signups[id]=signups[id].filter(s=>s.name!==name); }
 
-/* ── Date windows ── */
+/* ── date windows ── */
 function getFlexibleDates(id) {
   const center = nextDueStr(id), dates = [];
   for (let i=-WINDOW_DAYS; i<=WINDOW_DAYS; i++) {
@@ -341,13 +394,13 @@ function getWaterDates() {
   if (month<=2||month>=12) return { dates:[], note:'Off-season — no watering needed.' };
   const entry = getFreqEntry('water',month);
   if (!entry.days) return { dates:[], note:'No watering needed right now.' };
-  const center = nextDueStr('water'), fc = WEATHER.days.map(d=>d.dateStr), cands=[];
-  for (let i=0; i<=entry.days; i++) { const d=addDays(center,i); if(daysBetween(todayStr,d)>=0) cands.push(d); }
-  const inf = cands.filter(d=>fc.includes(d));
+  const center=nextDueStr('water'), fc=WEATHER.days.map(d=>d.dateStr), cands=[];
+  for (let i=0;i<=entry.days;i++) { const d=addDays(center,i); if(daysBetween(todayStr,d)>=0) cands.push(d); }
+  const inf=cands.filter(d=>fc.includes(d));
   return { dates:[...new Set(inf.length?inf:cands.slice(0,entry.days))].sort(), note:`Based on forecast & seasonal schedule (${entry.label}). Only valid dates shown.` };
 }
 
-/* ── Weather render ── */
+/* ── weather render ── */
 function wIcon(d) { if(d.precip_pct>=50)return'🌧️'; if(d.precip_pct>=25)return'🌦️'; if(d.high>=90)return'🔥'; if(d.high>=75)return'☀️'; return'⛅'; }
 function wClass(d) { if(d.high>=90)return'wday-hot'; if(d.precip_pct>=50)return'wday-rain'; return'wday-clear'; }
 function renderWeather() {
@@ -360,47 +413,65 @@ function renderAlert() {
   return `<div class="alert ${cls}"><div class="alert-icon">${icon}</div><div><strong>${title}</strong>${reason}</div></div>`;
 }
 
-/* ── Render upcoming ── */
+/* ── render upcoming ── */
 function renderUpcoming() {
   let due=0, html=renderWeather()+renderAlert();
-  TASKS.forEach(t=>{
-    const s=getStatus(t.id), last=getLastDone(t.id), entry=getFreqEntry(t.id,todayMonth);
-    const doneToday=isDoneToday(t.id), actionable=isActionable(t.id);
+  TASKS.forEach(t => {
+    const s         = getStatus(t.id);
+    const last      = getLastDone(t.id);
+    const entry     = getFreqEntry(t.id, todayMonth);
+    const doneToday = isDoneToday(t.id);
+    const completion= getTodayCompletion(t.id);
+    const actionable= isActionable(t.id);
     if (s.chip==='chip-overdue'||s.label==='Never logged') due++;
-    html+=`<div class="task-card ${doneToday?'done-today':s.extra||t.cardClass}">
+
+    const cardCls = doneToday ? 'done-today' : (s.extra || t.cardClass);
+    html += `<div class="task-card ${cardCls}">
       <div class="task-header">
         <div class="task-icon">${t.icon}</div>
         <div>
-          <div class="task-name"${doneToday?' style="text-decoration:line-through;color:var(--muted)"':''}>${t.name}</div>
+          <div class="task-name${doneToday?' struck':''}">${t.name}</div>
           <div class="task-meta">${last?`Last: ${fmtDateTime(last.toISOString())}`:'Never logged'} · ${entry.label}</div>
         </div>
         <span class="chip ${s.chip}">${s.label}</span>
       </div>`;
-    if (actionable) {
-      if (!doneToday) {
-        const sups=getSignups(t.id);
-        html+=`<div class="task-body">
-          <div class="signup-row-label">Signed up:</div>
-          ${sups.length?'<div class="signup-list">'+sups.map(s=>`<span class="signup-pill">${esc(s.name)}<span class="date-tag">· ${fmtShort(s.date)}</span><span class="rem" onclick="doRemove('${t.id}','${s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">×</span></span>`).join('')+'</div>':'<div class="no-signups">No one signed up yet — be first!</div>'}
-          <div class="task-actions">
-            <button class="btn-signup" onclick="openSignup('${t.id}')">+ Sign up</button>
-            <button class="btn-done"   onclick="openComplete('${t.id}')">✓ Mark as done</button>
-          </div>
-        </div>`;
-      } else {
-        const latest=[...history].filter(e=>e.taskId===t.id&&e.date.startsWith(todayStr)).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-        html+=`<div class="done-banner">✓ Done today by <strong style="margin-left:4px">${esc(latest.who)}</strong>${latest.note?` — <em>${esc(latest.note)}</em>`:''}</div>`;
-      }
+
+    /* ── done banner with undo ── */
+    if (doneToday && completion) {
+      html += `<div class="done-banner">
+        <div class="done-banner-left">
+          <span>✓</span>
+          <span>Done today by <strong>${esc(completion.who)}</strong>${completion.note?` — <em>${esc(completion.note)}</em>`:''}</span>
+        </div>
+        <button class="btn-undo" onclick="openUndo('${t.id}','${completion.id}')">Undo</button>
+      </div>`;
     }
-    html+='</div>';
+
+    /* ── signup section — always shown when task is actionable ── */
+    if (actionable) {
+      const sups = getSignups(t.id);
+      html += `<div class="signup-section">
+        <div class="signup-row-label">Signed up for next occurrence:</div>
+        ${sups.length
+          ? '<div class="signup-list">'+sups.map(s=>`<span class="signup-pill">${esc(s.name)}<span class="date-tag">· ${fmtShort(s.date)}</span><span class="rem" onclick="doRemove('${t.id}','${s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">×</span></span>`).join('')+'</div>'
+          : '<div class="no-signups">No one signed up yet — be first!</div>'}
+        <div class="task-actions">
+          <button class="btn-signup" onclick="openSignup('${t.id}')">+ Sign up</button>
+          ${!doneToday ? `<button class="btn-done" onclick="openComplete('${t.id}')">✓ Mark as done</button>` : ''}
+        </div>
+      </div>`;
+    }
+
+    html += '</div>';
   });
-  document.getElementById('tab-upcoming').innerHTML=html;
-  const b=document.getElementById('badge-text');
-  b.textContent=due?`${due} task${due>1?'s':''} due`:'All up to date';
-  b.className='hero-badge '+(due>=2?'danger':due===1?'warn':'ok');
+
+  document.getElementById('tab-upcoming').innerHTML = html;
+  const b = document.getElementById('badge-text');
+  b.textContent = due ? `${due} task${due>1?'s':''} due` : 'All up to date';
+  b.className   = 'hero-badge ' + (due>=2?'danger':due===1?'warn':'ok');
 }
 
-/* ── Date picker ── */
+/* ── date picker ── */
 function buildDatePicker(id, isComplete) {
   const area=document.getElementById('date-picker-area'), lbl=document.getElementById('date-label');
   if (isComplete) {
@@ -432,7 +503,7 @@ function refreshDateBtns() {
   document.querySelectorAll('#date-picker-area .date-btn').forEach(b=>b.classList.toggle('selected',b.dataset.date===selectedDate));
 }
 
-/* ── Modal ── */
+/* ── sign up modal ── */
 function openSignup(id) {
   pendingTaskId=id; modalMode='signup';
   const t=TASKS.find(x=>x.id===id), entry=getFreqEntry(id,todayMonth);
@@ -447,6 +518,8 @@ function openSignup(id) {
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('input-name').focus(),50);
 }
+
+/* ── mark done modal ── */
 function openComplete(id) {
   pendingTaskId=id; modalMode='complete';
   const t=TASKS.find(x=>x.id===id);
@@ -459,6 +532,7 @@ function openComplete(id) {
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('input-name').focus(),50);
 }
+
 function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); pendingTaskId=null; selectedDate=null; }
 
 async function submitModal() {
@@ -470,18 +544,44 @@ async function submitModal() {
     if (pendingTaskId==='water'&&!selectedDate) { closeModal(); return; }
     addSignup(pendingTaskId,name,date);
   } else {
-    history.push({ taskId:pendingTaskId, who:name, note, date:new Date().toISOString() });
+    /* each completion gets a unique id so we can undo it precisely */
+    history.push({ id:uid(), taskId:pendingTaskId, who:name, note, date:new Date().toISOString() });
   }
   await window._save({ history, signups });
   closeModal();
 }
+
 async function doRemove(id, name) {
   removeSignup(id,name);
   await window._save({ history, signups });
 }
+
 document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
-/* ── History ── */
+/* ── undo / confirm modal ── */
+function openUndo(taskId, entryId) {
+  undoTaskId=taskId; undoEntryId=entryId;
+  const t=TASKS.find(x=>x.id===taskId);
+  const entry=history.find(e=>e.id===entryId);
+  document.getElementById('confirm-hint').textContent=
+    entry ? `This will remove the completion logged by "${entry.who}" for ${t.name} today.` : `This will remove today's completion for ${t.name}.`;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); undoTaskId=null; undoEntryId=null; }
+async function confirmUndo() {
+  if (!window._save) return;
+  /* remove by id if present, otherwise remove all of today's entries for this task */
+  if (undoEntryId) {
+    history = history.filter(e=>e.id!==undoEntryId);
+  } else {
+    history = history.filter(e=>!(e.taskId===undoTaskId && e.date.startsWith(todayStr)));
+  }
+  await window._save({ history, signups });
+  closeConfirm();
+}
+document.getElementById('confirm-overlay').addEventListener('click',function(e){if(e.target===this)closeConfirm();});
+
+/* ── history tab ── */
 function renderHistory() {
   const el=document.getElementById('tab-history');
   if (!history.length) { el.innerHTML='<p class="empty">No completions logged yet — be the first!</p>'; return; }
@@ -491,7 +591,7 @@ function renderHistory() {
   }).join('');
 }
 
-/* ── Schedule ── */
+/* ── schedule tab ── */
 function renderSchedule() {
   const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html=`<p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Philadelphia 2026 base schedule. Watering dates are locked to the forecast &amp; season. Other tasks allow a ±${WINDOW_DAYS}-day flexibility window.</p>`;
@@ -506,7 +606,7 @@ function renderSchedule() {
   document.getElementById('tab-schedule').innerHTML=html;
 }
 
-/* ── Tab switching ── */
+/* ── tab switching ── */
 function showTab(name) {
   ['upcoming','history','schedule'].forEach(t=>{ document.getElementById('tab-'+t).style.display=t===name?'block':'none'; });
   document.querySelectorAll('.tab').forEach((b,i)=>{ b.classList.toggle('active',['upcoming','history','schedule'][i]===name); });
@@ -514,7 +614,7 @@ function showTab(name) {
   if (name==='schedule') renderSchedule();
 }
 
-/* ── Live data update from Firebase ── */
+/* ── live data from Firebase ── */
 window.addEventListener('data-update', () => {
   history = window._history || [];
   signups = window._signups || {};
@@ -523,7 +623,6 @@ window.addEventListener('data-update', () => {
   else if (activeTab === 'History') renderHistory();
 });
 
-/* ── Timeout fallback ── */
 setTimeout(()=>{
   if (!window._save) setStatus('error','⚠ Could not reach Firebase. Check your internet and refresh.');
 }, 9000);
